@@ -48,7 +48,7 @@ pub struct Creator {
     pub share: u8,
 }
 
-#[derive(AnchorSerialize,AnchorDeserialize,Clone)]
+#[derive(AnchorSerialize,AnchorDeserialize,Clone,Copy)]
 pub enum Key {
     Uninitialized,
     EditionV1,
@@ -62,7 +62,7 @@ pub enum Key {
     CollectionAuthorityRecord
 }
 
-#[derive(AnchorSerialize,AnchorDeserialize,Clone)]
+#[derive(AnchorSerialize,AnchorDeserialize,Clone,Copy)]
 pub struct Collection {
     pub verified: bool,
     pub key: Pubkey,
