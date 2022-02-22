@@ -7,13 +7,24 @@ use super::Metadata;
 
 #[derive(Accounts)]
 #[instruction(
-    amount: u64,
-    staking_instance_bump: u8,
+    _staking_instance_bump: u8,
+    _staking_user_bump: u8,
+    _metadata_instance_bump: u8,
 )]
 pub struct EnterStaking<'info> {
     #[account(signer)]
     pub authority: AccountInfo<'info>,
-    #[account(mut)]
+    pub instance_authority: AccountInfo<'info>,
+    #[account(
+        mut,
+        constraint = reward_token_mint
+            .mint_authority
+            .unwrap()
+            .key()
+            .eq(
+                &staking_instance.key(),
+            )
+    )]
     pub reward_token_mint: Box<Account<'info, Mint>>,
     #[account(
         mut,
@@ -22,36 +33,72 @@ pub struct EnterStaking<'info> {
     pub nft_token_mint: Box<Account<'info, Mint>>,
     #[account(
         mut,
-        constraint = nft_token_metadata.collection.unwrap().key == 
-            allowed_collection_address.key(),
+        seeds = [
+            b"metadata".as_ref(), 
+            Pubkey::new(crate::NFT_TOKEN_PROGRAM_BYTES).as_ref(),
+            nft_token_mint.key().as_ref()
+        ],
+        bump = _metadata_instance_bump,
+        constraint = nft_token_metadata
+            .data
+            .creators
+            .as_ref()
+            .unwrap()
+            .iter()
+            .filter(|item|{
+                allowed_collection_address.key() == item.address && item.verified
+            })
+            .count() > 0,
     )]
     pub nft_token_metadata: Box<Account<'info, Metadata>>,
-    #[account(mut)]
+    #[account(
+        mut,
+        associated_token::mint = nft_token_mint,
+        associated_token::authority = authority,
+    )]
     pub nft_token_authority_wallet: Box<Account<'info, TokenAccount>>,
-    #[account(mut)]
+    #[account(
+        mut,
+        associated_token::mint = nft_token_mint,
+        associated_token::authority = staking_instance,
+    )]
     pub nft_token_program_wallet: Box<Account<'info, TokenAccount>>,
     #[account(
         mut, 
-        seeds = [b"stakingInstance".as_ref()],
-        bump = staking_instance_bump,
+        seeds = [crate::STAKING_SEED.as_ref(),instance_authority.key().as_ref()],
+        bump = _staking_instance_bump,
+    )]
+    pub staking_instance: Box<Account<'info, StakingInstance>>,
+    #[account(
+        init, 
+        seeds = [
+            crate::USER_SEED.as_ref(),
+            staking_instance.key().as_ref(),
+            authority.key().as_ref()
+        ],
+        bump = _staking_user_bump,
+        //space = 8 + core::mem::size_of::<User>(),
+        payer = authority,
+    )]
+    pub user_instance: Box<Account<'info, User>>,
+    #[account(
         constraint = allowed_collection_address.key() 
             == staking_instance.allowed_collection_address,
     )]
-    pub staking_instance: Account<'info, StakingInstance>,
-    #[account(
-        init, 
-        seeds = [b"stakingUser".as_ref()],
-        bump = staking_instance_bump,
-        space = 8 + core::mem::size_of::<User>(),
-        payer = authority,
-    )]
-    pub user_instance: Account<'info, User>,
     pub allowed_collection_address: AccountInfo<'info>,
-
+    #[account(
+        constraint = 
+            token_program.key() == Pubkey::new(crate::TOKEN_PROGRAM_BYTES),
+    )]
+    pub token_program: AccountInfo<'info>,
+    #[account(
+        constraint = 
+            token_program.key() == Pubkey::new(crate::NFT_TOKEN_PROGRAM_BYTES),
+    )]
+    pub nft_program_id: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
     pub rent: AccountInfo<'info>,
     pub time: Sysvar<'info,Clock>,
-    pub token_program: AccountInfo<'info>,
 
 }
 

@@ -1,7 +1,9 @@
 use anchor_lang::prelude::*;
 pub mod cancel_staking;
 pub mod enter_staking;
-pub mod initialize;
+pub mod claim_rewards;
+pub mod initialize_staking;
+pub mod initialize_user;
 
 // structures from metaverse code of nft metadata
 // structures here fully copied from metaverse solana library repo
@@ -98,6 +100,7 @@ pub struct StakingInstance {
     pub authority: Pubkey,
     pub reward_token_per_sec: u64,
     pub reward_token_mint: Pubkey,
+    /// this address is being checked as a verified creator of nft
     pub allowed_collection_address: Pubkey,
     pub accumulated_reward_per_share: u64,
     pub last_reward_timestamp: u64,
@@ -105,9 +108,10 @@ pub struct StakingInstance {
 }
 
 #[account]
-#[derive(Copy)]     
+#[derive(Copy,Default)]     
 pub struct User {
     pub deposited_amount: u64,
     pub reward_debt: u64,
+    pub accumulated_reward: u64,
 }
 
