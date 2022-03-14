@@ -14,7 +14,6 @@ use super::Metadata;
 pub struct CancelStaking<'info> {
     #[account(signer)]
     pub authority: AccountInfo<'info>,
-    pub instance_authority: AccountInfo<'info>,
     #[account(
         mut,
         constraint = reward_token_mint
@@ -65,7 +64,7 @@ pub struct CancelStaking<'info> {
     pub nft_token_program_wallet: Box<Account<'info, TokenAccount>>,
     #[account(
         mut, 
-        seeds = [crate::STAKING_SEED.as_ref(),instance_authority.key().as_ref()],
+        seeds = [crate::STAKING_SEED.as_ref(),staking_instance.authority.as_ref()],
         bump = staking_instance_bump,
     )]
     pub staking_instance: Box<Account<'info, StakingInstance>>,

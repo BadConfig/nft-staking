@@ -26,7 +26,7 @@ pub struct InitializeUser<'info> {
     pub user_instance: Box<Account<'info, User>>,
     #[account(
         mut, 
-        seeds = [crate::STAKING_SEED.as_ref(),authority.key().as_ref()],
+        seeds = [crate::STAKING_SEED.as_ref(),staking_instance.authority.as_ref()],
         bump = _staking_instance_bump,
     )]
     pub staking_instance: Account<'info, StakingInstance>,
