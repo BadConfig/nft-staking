@@ -1,12 +1,14 @@
 [programs.localnet]
 metaverse_staking = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+[programs.devnet]
+metaverse_staking = "GBpQdoXPzopEfP6Nmwv6PprWUo1nKcziK6Bqjeb7pCzi"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
-wallet = "/Users/artemiyartamonov/.config/solana/id.json"
+cluster = "devnet"
+wallet = "/Users/artemiyartamonov/.config/solana/devnet.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/*"
