@@ -42,15 +42,13 @@ pub struct ClaimRewards<'info> {
     )]
     pub staking_instance: Box<Account<'info, StakingInstance>>,
     #[account(
-        init, 
+        mut, 
         seeds = [
             crate::USER_SEED.as_ref(),
             staking_instance.key().as_ref(),
             authority.key().as_ref()
         ],
         bump = _staking_user_bump,
-        //space = 8 + core::mem::size_of::<User>(),
-        payer = authority,
     )]
     pub user_instance: Box<Account<'info, User>>,
     #[account(

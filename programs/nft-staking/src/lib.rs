@@ -20,7 +20,7 @@ use anchor_spl::token::{
 
 
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("FBPYsWpNXyGLExNnL1h11KiXmAjfLtHhv385E95tjCPC");
 
 fn update_reward_pool(
     current_timestamp: u64,
@@ -113,16 +113,18 @@ pub mod nft_staking {
         ctx: Context<EnterStaking>,
         _staking_instance_bump: u8,
         _staking_user_bump: u8,
-        _metadata_instance_bump: u8,
     ) -> ProgramResult {
+        msg!("start");
         let staking_instance = &mut ctx.accounts.staking_instance;
         let user_instance = &mut ctx.accounts.user_instance;
         let current_timestamp = ctx.accounts.time.unix_timestamp as u64;
+        msg!("here");
         update_reward_pool(
             current_timestamp,
             staking_instance,
             user_instance,
         );
+        msg!("after rew pool");
 
         let cpi_accounts = Transfer {
             to: ctx.accounts.nft_token_program_wallet.to_account_info(),
@@ -131,6 +133,7 @@ pub mod nft_staking {
         };
         let cpi_program = ctx.accounts.token_program.clone();
         let context = CpiContext::new(cpi_program, cpi_accounts);
+        msg!("before transfer");
         token::transfer(context, 1)?;
 
         user_instance.deposited_amount = user_instance

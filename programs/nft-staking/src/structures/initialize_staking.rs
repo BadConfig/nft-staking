@@ -16,7 +16,6 @@ pub struct InitializeStaking<'info> {
             .mint_authority
             .unwrap()
             .key() == staking_instance.key(),
-        // reward token mint ownership constraint may go here
     )]
     pub reward_token_mint: Box<Account<'info, Mint>>,
     #[account(

@@ -9,7 +9,6 @@ use super::Metadata;
 #[instruction(
     _staking_instance_bump: u8,
     _staking_user_bump: u8,
-    _metadata_instance_bump: u8,
 )]
 pub struct EnterStaking<'info> {
     #[account(signer)]
@@ -27,24 +26,19 @@ pub struct EnterStaking<'info> {
     pub reward_token_mint: Box<Account<'info, Mint>>,
     #[account(
         mut,
-        constraint = nft_token_metadata.mint == nft_token_mint.key(),
+        //constraint = nft_token_metadata.mint == nft_token_mint.key(),
     )]
     pub nft_token_mint: Box<Account<'info, Mint>>,
     #[account(
         mut,
-        seeds = [
-            b"metadata".as_ref(), 
-            Pubkey::new(crate::NFT_TOKEN_PROGRAM_BYTES).as_ref(),
-            nft_token_mint.key().as_ref()
-        ],
-        bump = _metadata_instance_bump,
+        constraint = nft_token_metadata.to_account_info().owner == &nft_program_id.key(),
         constraint = nft_token_metadata
             .data
             .creators
             .as_ref()
             .unwrap()
             .iter()
-            .filter(|item|{
+           .filter(|item|{
                 allowed_collection_address.key() == item.address && item.verified
             })
             .count() > 0,
@@ -69,15 +63,13 @@ pub struct EnterStaking<'info> {
     )]
     pub staking_instance: Box<Account<'info, StakingInstance>>,
     #[account(
-        init, 
+        mut, 
         seeds = [
             crate::USER_SEED.as_ref(),
             staking_instance.key().as_ref(),
             authority.key().as_ref()
         ],
         bump = _staking_user_bump,
-        //space = 8 + core::mem::size_of::<User>(),
-        payer = authority,
     )]
     pub user_instance: Box<Account<'info, User>>,
     #[account(
@@ -92,7 +84,7 @@ pub struct EnterStaking<'info> {
     pub token_program: AccountInfo<'info>,
     #[account(
         constraint = 
-            token_program.key() == Pubkey::new(crate::NFT_TOKEN_PROGRAM_BYTES),
+            nft_program_id.key() == Pubkey::new(crate::NFT_TOKEN_PROGRAM_BYTES),
     )]
     pub nft_program_id: AccountInfo<'info>,
     pub system_program: Program<'info, System>,

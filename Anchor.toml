@@ -1,7 +1,5 @@
-[programs.localnet]
-metaverse_staking = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
 [programs.devnet]
-metaverse_staking = "GBpQdoXPzopEfP6Nmwv6PprWUo1nKcziK6Bqjeb7pCzi"
+metaverse_staking = "FBPYsWpNXyGLExNnL1h11KiXmAjfLtHhv385E95tjCPC"
 
 [registry]
 url = "https://anchor.projectserum.com"

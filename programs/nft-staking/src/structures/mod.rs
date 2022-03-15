@@ -18,13 +18,13 @@ pub struct Metadata {
     pub primary_sale_happened: bool,
     // Whether or not the data struct is mutable, default is not
     pub is_mutable: bool,
-    /// nonce for easy calculation of editions, if present
+    //// nonce for easy calculation of editions, if present
     pub edition_nonce: Option<u8>,
-    /// Since we cannot easily change Metadata, we add the new DataV2 fields here at the end.
+    //// Since we cannot easily change Metadata, we add the new DataV2 fields here at the end.
     pub token_standard: Option<TokenStandard>,
-    /// Collection
+    //// Collection
     pub collection: Option<Collection>,
-    /// Uses
+    //// Uses
     pub uses: Option<Uses>,
 }
 
@@ -115,3 +115,12 @@ pub struct User {
     pub accumulated_reward: u64,
 }
 
+#[cfg(test)]
+pub mod test {
+    use mpl_token_metadata::state::Metadata;
+
+    #[test]
+    fn a() {
+        println!("{}",core::mem::size_of::<Metadata>());
+    }
+}
