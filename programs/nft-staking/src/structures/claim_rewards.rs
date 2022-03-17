@@ -6,6 +6,7 @@ use anchor_spl::token::Mint;
 
 #[derive(Accounts)]
 #[instruction(
+    amount: u64,
     staking_instance_bump: u8,
     _staking_user_bump: u8,
 )]
@@ -29,12 +30,6 @@ pub struct ClaimRewards<'info> {
     )]
     pub reward_token_authority_wallet: Box<Account<'info, TokenAccount>>,
     #[account(
-        mut,
-        associated_token::mint = reward_token_mint,
-        associated_token::authority = staking_instance,
-    )]
-    pub reward_token_program_wallet: Box<Account<'info, TokenAccount>>,
-    #[account(
         mut, 
         seeds = [crate::STAKING_SEED.as_ref(),staking_instance.authority.as_ref()],
         bump = staking_instance_bump,
@@ -52,7 +47,7 @@ pub struct ClaimRewards<'info> {
     pub user_instance: Box<Account<'info, User>>,
     #[account(
         constraint = 
-            token_program.key() == Pubkey::new(crate::TOKEN_PROGRAM_BYTES),
+            token_program.key() == crate::TOKEN_PROGRAM_BYTES.parse::<Pubkey>().unwrap(),
     )]
     pub token_program: AccountInfo<'info>,
     pub system_program: Program<'info, System>,

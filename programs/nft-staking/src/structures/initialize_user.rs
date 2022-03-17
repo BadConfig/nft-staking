@@ -20,7 +20,6 @@ pub struct InitializeUser<'info> {
             authority.key().as_ref()
         ],
         bump = _staking_user_bump,
-        //space = 8 + core::mem::size_of::<User>(),
         payer = authority,
     )]
     pub user_instance: Box<Account<'info, User>>,
