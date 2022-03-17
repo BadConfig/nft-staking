@@ -20,7 +20,7 @@ use anchor_spl::token::{
 
 
 
-declare_id!("FBPYsWpNXyGLExNnL1h11KiXmAjfLtHhv385E95tjCPC");
+declare_id!("EXZJ3cCRD8dxmTYPxY4nWEWjGiwiW1U9yz2jzJzngnLg");
 
 fn update_reward_pool(
     current_timestamp: u64,
@@ -39,7 +39,7 @@ fn update_reward_pool(
         .checked_mul(COMPUTATION_DECIMALS)
         .unwrap()
         .checked_div(staking_instance.total_shares)
-        .unwrap())
+        .unwrap_or(0))
         .unwrap();
     staking_instance.last_reward_timestamp = current_timestamp;
 }
@@ -114,7 +114,29 @@ pub mod nft_staking {
         _staking_instance_bump: u8,
         _staking_user_bump: u8,
     ) -> ProgramResult {
-        msg!("start");
+        let data = &mut ctx.accounts.nft_token_metadata.try_borrow_data()?;
+        let val = mpl_token_metadata::state::Metadata::deserialize(&mut &data[..])?;
+        if 
+            val
+            .data
+            .creators
+            .as_ref()
+            .unwrap()
+            .iter()
+           .filter(|item|{
+
+                ctx.accounts.allowed_collection_address.key() == 
+                    item.address && item.verified
+          })
+            .count() == 0 {
+                msg!("error");
+              return Ok(());
+        }
+            if val.mint != ctx.accounts.nft_token_mint.key() {
+                msg!("error");
+                return Ok(());
+            }
+      msg!("start");
         let staking_instance = &mut ctx.accounts.staking_instance;
         let user_instance = &mut ctx.accounts.user_instance;
         let current_timestamp = ctx.accounts.time.unix_timestamp as u64;
@@ -144,7 +166,7 @@ pub mod nft_staking {
             .total_shares
             .checked_add(1)
             .unwrap();
-        update_reward_debt(
+       update_reward_debt(
             staking_instance,
             user_instance,
         );
@@ -236,3 +258,5 @@ pub mod nft_staking {
         Ok(())
     }
 }
+
+

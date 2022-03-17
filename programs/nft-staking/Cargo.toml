@@ -19,10 +19,12 @@ test-bpf = []
 [dependencies]
 anchor-lang = "0.20.1"
 anchor-spl = "0.20.1"
+mpl-token-metadata = { features = ["no-entrypoint"], version = "1.2.5" }
 
 [dev-dependencies]
 spl-token = "~3.2.0"
-mpl-token-metadata = { features = [ "no-entrypoint" ], version="~1.1.0" }
+#mpl-token-metadata = { features = [ "no-entrypoint" ], version="~1.1.0" }
+
 
 anchor-client = "~0.22"
 solana-program-test = "~1.9.5"

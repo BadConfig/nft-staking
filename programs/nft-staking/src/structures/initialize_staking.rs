@@ -14,8 +14,7 @@ pub struct InitializeStaking<'info> {
         mut,
         constraint = reward_token_mint
             .mint_authority
-            .unwrap()
-            .key() == staking_instance.key(),
+            .unwrap() == staking_instance.key(),
     )]
     pub reward_token_mint: Box<Account<'info, Mint>>,
     #[account(

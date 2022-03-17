@@ -17,7 +17,6 @@ pub struct ClaimRewards<'info> {
         constraint = reward_token_mint
             .mint_authority
             .unwrap()
-            .key()
             .eq(
                 &staking_instance.key(),
             )

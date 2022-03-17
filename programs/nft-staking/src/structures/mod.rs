@@ -9,6 +9,7 @@ pub mod initialize_user;
 // structures here fully copied from metaverse solana library repo
 // difference is anchor resealization derives change
 #[account]
+//#[derive(AnchorDeserialize)]
 pub struct Metadata {
     pub key: Key,
     pub update_authority: Pubkey,
@@ -27,6 +28,7 @@ pub struct Metadata {
     //// Uses
     pub uses: Option<Uses>,
 }
+
 
 #[derive(AnchorSerialize,AnchorDeserialize,Clone)]
 pub struct Data {
