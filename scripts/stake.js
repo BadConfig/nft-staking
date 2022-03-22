@@ -6,7 +6,7 @@ import {
 } from '@solana/web3.js'
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token"
 import staking from '../nft_staking.json'
-import WALLET from './owner.json';
+import WALLET from './wallet.json';
 import dotenv from 'dotenv'
 
 import { 
@@ -58,7 +58,6 @@ async function main() {
         })
     }
 
-    console.log((await program.account.stakingInstance.fetch(programPDA)).rewardTokenPerSec.toString())
     const [metaPDA, metaBump] =
         await PublicKey.findProgramAddress([Buffer.from(seeds.meta, "utf8"),
         tokenMetadata.toBuffer(), nftMint.toBuffer()], tokenMetadata);
