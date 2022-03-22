@@ -4,8 +4,7 @@ import {
     clusterApiUrl,
     PublicKey,
 } from '@solana/web3.js'
-import pkg, { TOKEN_PROGRAM_ID } from "@solana/spl-token"
-const { Token, ASSOCIATED_TOKEN_PROGRAM_ID } = pkg
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token"
 import staking from '../nft_staking.json'
 import WALLET from './owner.json';
 import dotenv from 'dotenv'
@@ -18,9 +17,9 @@ import {
     opts, 
     seeds, 
     owner, 
-    findAssociatedTokenAddress, 
     getOrCreateAssociatedTokenAccount 
 } from "./common.js"
+
 const { SystemProgram, SYSVAR_RENT_PUBKEY, SYSVAR_CLOCK_PUBKEY } = anchor.web3
 
 async function main() {
@@ -54,7 +53,7 @@ async function main() {
         programPDA,
         wallet
     );
-    
+
     const userATA = await getOrCreateAssociatedTokenAccount(
         connection,
         nftMint,
@@ -86,10 +85,8 @@ async function main() {
     })
 
     console.log(txn)
-    // const acc = await program.account.myAccount.fetch(localAccount.publicKey)
-
 }
 
 main().then("finish")
 
-// node --experimental-json-modules stake.js
+// node --experimental-json-modules unstake.js

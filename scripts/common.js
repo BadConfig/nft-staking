@@ -51,7 +51,6 @@ export async function getOrCreateAssociatedTokenAccount(
         wallet,
         mint
         );
-        console.log(address);
     if (!(await connection.getAccountInfo(address))) {
         const txn = new Transaction().add(Token.createAssociatedTokenAccountInstruction(
             ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -64,7 +63,6 @@ export async function getOrCreateAssociatedTokenAccount(
         txn.recentBlockhash = (
             await connection.getRecentBlockhash()
         ).blockhash;
-        console.log(payer);
         txn.sign(payer)
         let signature = await connection.sendRawTransaction(txn.serialize());
         let confirmed = await connection.confirmTransaction(signature);

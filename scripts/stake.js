@@ -58,7 +58,6 @@ async function main() {
         })
     }
 
-    console.log((await program.account.stakingInstance.fetch(programPDA)).rewardTokenPerSec.toString())
     const [metaPDA, metaBump] =
         await PublicKey.findProgramAddress([Buffer.from(seeds.meta, "utf8"),
         tokenMetadata.toBuffer(), nftMint.toBuffer()], tokenMetadata);

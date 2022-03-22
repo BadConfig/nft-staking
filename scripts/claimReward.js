@@ -7,11 +7,9 @@ import {
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token"
 import staking from '../nft_staking.json'
 import WALLET from './owner.json';
-import dotenv from 'dotenv'
 
 import { 
     programID, 
-    tokenMetadata, 
     rewardToken, 
     opts, 
     seeds, 
@@ -21,9 +19,6 @@ import {
 const { SystemProgram, SYSVAR_RENT_PUBKEY, SYSVAR_CLOCK_PUBKEY } = anchor.web3
 
 async function main() {
-    const conf = (dotenv.config()).parsed
-    const nftMint = new PublicKey(conf.NFT_MINT)
-
     const network = clusterApiUrl("devnet")
     const connection = new Connection(network, opts.preflightCommitment);
     const wallet = anchor.web3.Keypair.fromSecretKey(Uint8Array.from(WALLET))
@@ -42,8 +37,10 @@ async function main() {
     );
 
     const userRewardATA = await getOrCreateAssociatedTokenAccount(
+        connection,
+        rewardToken,
         wallet.publicKey,
-        rewardToken
+        wallet
     );
     
     const BN = anchor.BN;
@@ -67,8 +64,6 @@ async function main() {
     )
 
     console.log(txn)
-    // const acc = await program.account.myAccount.fetch(localAccount.publicKey)
-
 }
 
 main().then("finish")
