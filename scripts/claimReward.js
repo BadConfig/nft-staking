@@ -6,7 +6,7 @@ import {
 } from '@solana/web3.js'
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token"
 import staking from '../nft_staking.json'
-import WALLET from './owner.json';
+import WALLET from './wallet.json';
 
 import { 
     programID, 
